@@ -8,7 +8,16 @@
  */
 
 import { onRequest } from "firebase-functions/v2/https";
+import * as admin from "firebase-admin";
+import * as serviceAccount from "./private/serviceAccountKey.json";
+
 // import * as logger from "firebase-functions/logger";
+
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+	databaseURL:
+		"https://firestore-grafica-2b149-default-rtdb.europe-west1.firebasedatabase.app",
+});
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
