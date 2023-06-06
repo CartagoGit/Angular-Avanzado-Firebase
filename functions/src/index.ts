@@ -26,3 +26,12 @@ export const helloWorld = onRequest((request, response) => {
 	// logger.info("Hello logs!", { structuredData: true });
 	response.json({ mensaje: "Hola desde Firebase!" });
 });
+
+export const getGoty = onRequest((request, response) => {
+	const nombre = request.query.nombre || "Sin nombre";
+	response.status(200).json({
+		ok: true,
+		mensaje: "Todo esta bien",
+		nombre,
+	});
+});
