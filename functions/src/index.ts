@@ -19,19 +19,28 @@ admin.initializeApp({
 		"https://firestore-grafica-2b149-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
+const db = admin.firestore();
+
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const helloWorld = onRequest((request, response) => {
+export const helloWorld = onRequest((_request, response) => {
 	// logger.info("Hello logs!", { structuredData: true });
 	response.json({ mensaje: "Hola desde Firebase!" });
 });
 
-export const getGoty = onRequest((request, response) => {
+export const getParam = onRequest((request, response) => {
 	const nombre = request.query.nombre || "Sin nombre";
 	response.status(200).json({
 		ok: true,
 		mensaje: "Todo esta bien",
 		nombre,
 	});
+});
+
+export const getGoty = onRequest(async (_request, response) => {
+	const gotyRef = db.collection("goty");
+	const docsSnap = await gotyRef.get();
+	const juegos = docsSnap.docs.map((doc) => doc.data());
+	response.json(juegos);
 });
