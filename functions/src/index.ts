@@ -58,7 +58,7 @@ app.get("/get-goty", async (_request, response) => {
 	response.json(juegos);
 });
 
-app.post("/post-goty/:id", async (request, response) => {
+app.post("/votar-goty/:id", async (request, response) => {
 	const id = request.params.id;
 	const gameRef = db.collection("goty").doc(id);
 	const gameSnap = await gameRef.get();
@@ -66,17 +66,29 @@ app.post("/post-goty/:id", async (request, response) => {
 	if (!gameSnap.exists) {
 		response.status(404).json({
 			ok: false,
-			mensaje: "No existe un juego con ese ID " + id,
+			mensaje: `No existe un juego con el ID '${id}'`,
 		});
 	} else {
-		const {votos, nombre} = gameSnap.data() || { votos: 0 };
+		const {
+			votos = 0,
+			nombre,
+			error = false,
+		} = gameSnap.data() || { error: true };
+		if (error) {
+			response.status(404).json({
+				ok: false,
+				mensaje: `Hubo un error al recuperar la data del ID '${id}'`,
+			});
+		}
+		// const antes = gameSnap.data() || {};
+		// console.log(antes);
 		await gameRef.update({
 			votos: votos + 1,
 		});
 		response.json({
 			ok: true,
-			mensaje: `Gracias por tu voto a ${nombre}`,
-		});	
+			mensaje: `Gracias por tu voto a '${nombre}'`,
+		});
 	}
 });
 
